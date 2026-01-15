@@ -76,7 +76,7 @@ class Order(models.Model):
         return f"<Order: {self.created_at:%Y-%m-%d %H:%M:%S}>"
 
 
-class Tickets(models.Model):
+class Ticket(models.Model):
     movie_session = models.ForeignKey(
         to=MovieSession,
         on_delete=models.CASCADE,
