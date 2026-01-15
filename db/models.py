@@ -70,15 +70,23 @@ class Order(models.Model):
     )
 
     class Meta:
-       ordering = ["-created_at"]
+        ordering = ["-created_at"]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"<Order: {self.created_at:%Y-%m-%d %H:%M:%S}>"
 
 
 class Tickets(models.Model):
-    movie_session = models.ForeignKey(to=MovieSession, on_delete=models.CASCADE, related_name="tickets")
-    order = models.ForeignKey(to=Order, on_delete=models.CASCADE, related_name="tickets")
+    movie_session = models.ForeignKey(
+        to=MovieSession,
+        on_delete=models.CASCADE,
+        related_name="tickets"
+    )
+    order = models.ForeignKey(
+        to=Order,
+        on_delete=models.CASCADE,
+        related_name="tickets"
+    )
     row = models.IntegerField()
     seat = models.IntegerField()
 
@@ -89,29 +97,34 @@ class Tickets(models.Model):
                 name="unique_tickets")
         ]
 
-    def clean(self):
+    def clean(self) -> None:
         if self.row < 1 or self.row >= self.movie_session.cinema_hall.rows:
             raise ValidationError(
-	            {"row": [f"row number must be in available range: (1, rows):"
-	                     f"(1, {self.movie_session.cinema_hall.rows})"]}
+                {"row": [f"row number must be in available range: (1, rows):"
+                         f"(1, {self.movie_session.cinema_hall.rows})"]}
             )
-        if self.seat < 1 or self.seat >= self.movie_session.cinema_hall.seats_in_row:
+        if (self.seat < 1
+                or self.seat >= self.movie_session.cinema_hall.seats_in_row):
             raise ValidationError(
-	            {"seat": [f"seat number must be in available range: (1, seats_in_row):"
-	                     f"(1, {self.movie_session.cinema_hall.seats_in_row})"]}
+                {"seat": [
+                    f"seat number must be in available range: "
+                    f"(1, seats_in_row): "
+                    f"(1, {self.movie_session.cinema_hall.seats_in_row})"
+                ]}
             )
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         self.full_clean()
         super().save(*args, **kwargs)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return (f"Ticket: {self.movie_session.movie.title}"
                 f"{self.movie_session.show_time:%Y-%m-%d %H:%M:%S}"
                 f"(row: {self.rows}, seats: {self.seats_in_row})>")
 
+
 class User(AbstractUser):
     user = models.CharField(max_length=20, blank=True, null=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.username
