@@ -15,20 +15,22 @@ def create_order(
 ) -> Order:
 
     user = User.objects.get(username=username)
-    order = Order(user=user)
+    order = Order.objects.create(user=user)
     if date:
         Order.objects.filter(pk=order.pk).update(created_at=date)
         order.created_at = date
+        order.refresh_from_db()
     for ticket_data in tickets:
         movie_session = MovieSession.objects.get(
             pk=ticket_data["movie_session"]
         )
-        Ticket.objects.create(
+        ticket = Ticket.objects.create(
             order=order,
             row=ticket_data["row"],
             seat=ticket_data["seat"],
             movie_session=movie_session
         )
+        ticket.save()
     return order
 
 
