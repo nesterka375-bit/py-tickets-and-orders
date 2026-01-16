@@ -28,18 +28,16 @@ def get_movie_by_id(movie_id: int) -> Movie:
 def create_movie(
     movie_title: str,
     movie_description: str,
-    release_date: str,
-    genres: list = None,
-    actors: list = None,
+    genres_ids: list = None,
+    actors_ids: list = None,
 ) -> Movie:
     with transaction.atomic():
         movie = Movie.objects.create(
             title=movie_title,
             description=movie_description,
-            release_date=release_date
         )
-        if actors:
-            movie.actors.set(actors)
-        if genres:
-            movie.genres.set(genres)
+        if actors_ids:
+            movie.actors.set(actors_ids)
+        if genres_ids:
+            movie.genres.set(genres_ids)
         return movie

@@ -73,7 +73,7 @@ class Order(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self) -> str:
-        return f"<Order: {self.created_at:%Y-%m-%d %H:%M:%S}>"
+        return f"{self.created_at:%Y-%m-%d %H:%M:%S}"
 
 
 class Ticket(models.Model):
@@ -100,7 +100,7 @@ class Ticket(models.Model):
     def clean(self) -> None:
         if self.row < 1 or self.row >= self.movie_session.cinema_hall.rows:
             raise ValidationError(
-                {"row": [f"row number must be in available range: (1, rows):"
+                {"row": [f"row number must be in available range: (1, rows): "
                          f"(1, {self.movie_session.cinema_hall.rows})"]}
             )
         if (self.seat < 1
@@ -118,9 +118,9 @@ class Ticket(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self) -> str:
-        return (f"Ticket: {self.movie_session.movie.title}"
-                f"{self.movie_session.show_time:%Y-%m-%d %H:%M:%S}"
-                f"(row: {self.rows}, seats: {self.seats_in_row})>")
+        return (f"{self.movie_session.movie.title}"
+                f"{self.movie_session.show_time:%Y-%m-%d %H:%M:%S} "
+                f"(row: {self.row}, seat: {self.seat})")
 
 
 class User(AbstractUser):

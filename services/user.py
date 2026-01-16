@@ -23,18 +23,18 @@ def create_user(
 
 
 def get_user(user_id: int) -> User:
-    return User.objects.get(user_id=user_id)
+    return User.objects.get(id=user_id)
 
 
 def update_user(
         user_id: int,
-        username: str,
-        password: str,
+        username: str = None,
+        password: str = None,
         email: str = None,
         first_name: str = None,
         last_name: str = None
 ) -> User:
-    user = User.objects.get(user_id=user_id)
+    user = User.objects.get(id=user_id)
     if username:
         user.username = username
 
