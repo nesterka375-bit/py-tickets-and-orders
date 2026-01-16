@@ -17,7 +17,9 @@ def create_order(
         order = Order(user=user)
         if date:
             order.created_at = date
-            order.save()
+        order.save()
+        if date:
+            Order.objects.filter(pk=order.pk).update(created_at=date)
         for ticket_data in tickets:
             movie_session = MovieSession.objects.get(
                 pk=ticket_data["movie_session"]

@@ -1,3 +1,5 @@
+from datetime import timezone
+
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
@@ -98,12 +100,12 @@ class Ticket(models.Model):
         ]
 
     def clean(self) -> None:
-        if self.row < 1 or self.row >= self.movie_session.cinema_hall.rows:
+        if self.row <= 1 or self.row >= self.movie_session.cinema_hall.rows:
             raise ValidationError(
                 {"row": [f"row number must be in available range: (1, rows): "
                          f"(1, {self.movie_session.cinema_hall.rows})"]}
             )
-        if (self.seat < 1
+        if (self.seat <= 1
                 or self.seat >= self.movie_session.cinema_hall.seats_in_row):
             raise ValidationError(
                 {"seat": [
@@ -118,7 +120,7 @@ class Ticket(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self) -> str:
-        return (f"{self.movie_session.movie.title}"
+        return (f"{self.movie_session.movie.title} "
                 f"{self.movie_session.show_time:%Y-%m-%d %H:%M:%S} "
                 f"(row: {self.row}, seat: {self.seat})")
 
