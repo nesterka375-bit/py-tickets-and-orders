@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
@@ -62,7 +63,7 @@ class MovieSession(models.Model):
 
 
 class Order(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=timezone.now)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -123,7 +124,6 @@ class Ticket(models.Model):
 
 
 class User(AbstractUser):
-    user = models.CharField(max_length=20, blank=True, null=True)
 
     def __str__(self) -> str:
         return self.username
